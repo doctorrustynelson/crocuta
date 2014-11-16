@@ -1,0 +1,30 @@
+{
+	"name": "crocuta",
+  	"version": "0.0.1",
+  	"description": "Node Map Reduce and Distributed Computing",
+  	"keywords": [
+  	    "map reduce",
+  	  	"distributed"
+  	],
+  	"author": "Rusty Nelson",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/doctorrustynelson/crocuta.git"
+	},
+	"bugs": {
+		"url": "https://github.com/doctorrustynelson/crocuta/issues"
+	},
+	"license": "MIT",
+  	"main": "lib/core.js",
+	"scripts": {
+		"test": "grunt test",
+	},
+  	"dependencies": {
+  		""
+  	},
+  	"devDependencies": {
+	  	"grunt": "0.4.5",
+		"grunt-contrib-jshint": "0.10.0",
+		"grunt-contrib-nodeunit": "0.4.1"
+	}
+}
