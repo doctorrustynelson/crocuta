@@ -17,10 +17,11 @@
 	"license": "MIT",
   	"main": "lib/core.js",
 	"scripts": {
-		"test": "grunt test",
+		"test": "grunt test"
 	},
   	"dependencies": {
-  		""
+  		"socket.io": "1.2.0",
+  		"socket.io-client": "1.2.0"
   	},
   	"devDependencies": {
 	  	"grunt": "0.4.5",
