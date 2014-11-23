@@ -18,6 +18,7 @@ module.exports = function( grunt ){
 				jshintrc: '.jshintrc'
 			}
 		},
+		
 		nodeunit: {
 			tests: [
 				'tests/**/*tests.js'
@@ -25,11 +26,18 @@ module.exports = function( grunt ){
 			options: {
 				reporter: 'verbose'
 			}
+		},
+		
+		coveralls: {
+			submit_coverage: {
+				src: 'coverage/lcov.info'
+			}
 		}
 	});
 	
 	grunt.loadNpmTasks( 'grunt-contrib-jshint' );
 	grunt.loadNpmTasks( 'grunt-contrib-nodeunit' );
+	grunt.loadNpmTasks( 'grunt-coveralls' );
 	
 	grunt.registerTask( 'test', [ 'jshint', 'nodeunit' ] );
 	grunt.registerTask( 'default', [ 'test' ] );

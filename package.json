@@ -17,15 +17,20 @@
 	"license": "MIT",
   	"main": "lib/core.js",
 	"scripts": {
-		"test": "grunt test"
+		"test": "grunt test",
+		"coverage": "istanbul cover --preload-sources -x bin/** -x examples/** -x Gruntfile.js -- grunt nodeunit",
+	    "ci": "npm run-script coverage && grunt coveralls"
 	},
   	"dependencies": {
   		"socket.io": "1.2.0",
-  		"socket.io-client": "1.2.0"
+  		"socket.io-client": "1.2.0",
+		"chalk": "0.5.1"
   	},
   	"devDependencies": {
 	  	"grunt": "0.4.5",
 		"grunt-contrib-jshint": "0.10.0",
-		"grunt-contrib-nodeunit": "0.4.1"
+		"grunt-contrib-nodeunit": "0.4.1",
+		"grunt-coveralls": "^1.0.0",
+	    "istanbul": "^0.3.2"
 	}
 }
