@@ -18,7 +18,7 @@
   	"main": "lib/core.js",
 	"scripts": {
 		"test": "grunt test",
-		"coverage": "istanbul cover --preload-sources -x bin/** -x examples/** -x Gruntfile.js -- grunt nodeunit",
+		"coverage": "istanbul cover --preload-sources -x **/bin/** -x **/examples/** -x Gruntfile.js -v --print both grunt",
 	    "ci": "npm run-script coverage && grunt coveralls"
 	},
   	"dependencies": {
@@ -30,7 +30,7 @@
 	  	"grunt": "0.4.5",
 		"grunt-contrib-jshint": "0.10.0",
 		"grunt-contrib-nodeunit": "0.4.1",
-		"grunt-coveralls": "^1.0.0",
-	    "istanbul": "^0.3.2"
+		"grunt-coveralls": "1.0.0",
+	    "istanbul": "0.3.2"
 	}
 }
