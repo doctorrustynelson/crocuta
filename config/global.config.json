@@ -15,6 +15,9 @@
 			"options": {
 				"multiplex": false
 			}
+		},
+		"data": {
+			"location": "C:\\Users\\rusty\\crocuta-data"
 		}
 	}
 	

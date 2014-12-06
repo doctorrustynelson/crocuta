@@ -23,6 +23,12 @@ module.exports = function( grunt ){
 			all: [
 				'tests/**/*tests.js'
 			],
+			connection: [
+			    'tests/connection-manager-tests.js'
+			],
+			data: [
+			    'tests/data-manager-tests.js'
+			],
 			ed: [
 			    'tests/ed-server-tests.js'
 			],
