@@ -162,49 +162,167 @@ module.exports.stopTests = {
 };
 
 module.exports.processJouleTests = {
-		simpleAnonymousJoule: function( unit ){
-			unit.expect(3);
+	simpleAnonymousJoule: function( unit ){
+		unit.expect(3);
+		
+		var test_shenzi = new Server( );
+		//var test_banzai = new Server( );
+		var ed_server = null;
+		
+		var timeout = setTimeout( function( ){
+			unit.ok( false, 'Test timed out.' );
+			ed_server.stop( );			
+			test_shenzi.close( );
+			//test_banzai.close( );
+			unit.done( );
+		}, 5000 );
+		
+		test_shenzi.on( 'connection', function( socket ){
+			unit.ok( true, 'Connected to Shenzi.' );
 			
-			var test_shenzi = new Server( );
-			//var test_banzai = new Server( );
-			var ed_server = null;
-			
-			var timeout = setTimeout( function( ){
-				unit.ok( false, 'Test timed out.' );
-				ed_server.stop( );			
-				test_shenzi.close( );
-				//test_banzai.close( );
-				unit.done( );
-			}, 5000 );
-			
-			test_shenzi.on( 'connection', function( socket ){
-				unit.ok( true, 'Connected to Shenzi.' );
+			socket.on( 'register', function( /* data */ ){
+				unit.ok( true, 'Registered with Shenzi.' );
 				
-				socket.on( 'register', function( /* data */ ){
-					unit.ok( true, 'Registered with Shenzi.' );
-					
-					socket.emit( 'joule', {
-						deploy: 'anonymous',
-						func: 'function( input, output, utils ){ output.return( 12345 ); }'
-					} );
-				} );
-				
-				socket.on( 'joule-result', function( result ){
-					unit.equal( result, 12345, 'Joule returned correct result.' );
-					clearTimeout( timeout );
-					ed_server.stop( );
-					test_shenzi.close( );
-					unit.done();
+				socket.emit( 'joule', {
+					deploy: 'anonymous',
+					func: 'function( input, output, utils ){ output.return( 12345 ); }'
 				} );
 			} );
 			
-			//test_banzai.on( 'connection', function( /* socket */ ){
-			//	unit.ok( true, 'Connected to Banzai.' );
-			//} );
+			socket.on( 'joule-result', function( result ){
+				unit.equal( result, 12345, 'Joule returned correct result.' );
+				clearTimeout( timeout );
+				ed_server.stop( );
+				test_shenzi.close( );
+				unit.done();
+			} );
+		} );
+		
+		//test_banzai.on( 'connection', function( /* socket */ ){
+		//	unit.ok( true, 'Connected to Banzai.' );
+		//} );
+		
+		test_shenzi.listen( 2102 ); 
+		//test_banzai.listen( 2103 ); 
+		
+		ed_server = new Ed( );
+	},
+	
+	badDeployType: function( unit ){
+		unit.expect(3);
+		
+		var test_shenzi = new Server( );
+		//var test_banzai = new Server( );
+		var ed_server = null;
+		
+		var timeout = setTimeout( function( ){
+			unit.ok( false, 'Test timed out.' );
+			ed_server.stop( );			
+			test_shenzi.close( );
+			//test_banzai.close( );
+			unit.done( );
+		}, 5000 );
+		
+		test_shenzi.on( 'connection', function( socket ){
+			unit.ok( true, 'Connected to Shenzi.' );
 			
-			test_shenzi.listen( 2102 ); 
-			//test_banzai.listen( 2103 ); 
+			socket.on( 'register', function( /* data */ ){
+				unit.ok( true, 'Registered with Shenzi.' );
+				
+				socket.emit( 'joule', {
+					deploy: 'bad-deploy-type',
+					func: 'function( input, output, utils ){ output.return( 12345 ); }'
+				} );
+			} );
 			
-			ed_server = new Ed( );
-		}
-	};
+			socket.on( 'err', function( result ){
+				unit.equal( result.type, 'joule', 'Joule error was thrown.' );
+				clearTimeout( timeout );
+				ed_server.stop( );
+				test_shenzi.close( );
+				unit.done();
+			} );
+		} );
+		
+		//test_banzai.on( 'connection', function( /* socket */ ){
+		//	unit.ok( true, 'Connected to Banzai.' );
+		//} );
+		
+		test_shenzi.listen( 2102 ); 
+		//test_banzai.listen( 2103 ); 
+		
+		ed_server = new Ed( );
+	},
+	
+	simpleAnonymousJouleWithInputs: function( unit ){
+		unit.expect(3);
+		
+		var test_shenzi = new Server( );
+		//var test_banzai = new Server( );
+		var ed_server = null;
+		
+		var timeout = setTimeout( function( ){
+			unit.ok( false, 'Test timed out.' );
+			ed_server.stop( );			
+			test_shenzi.close( );
+			//test_banzai.close( );
+			unit.done( );
+		}, 5000 );
+		
+		test_shenzi.on( 'connection', function( socket ){
+			unit.ok( true, 'Connected to Shenzi.' );
+			
+			socket.on( 'register', function( /* data */ ){
+				unit.ok( true, 'Registered with Shenzi.' );
+				
+				socket.emit( 'joule', {
+					deploy: 'anonymous',
+					func: [ 'function( input, output, utils ){',
+					        	'var result = {};',
+					        	'input.value.split( " " ).forEach( function( word ){',
+					        		'result[ word ] = ( result[ word ] === undefined ? 1 : result[ word ] + 1 );',
+					        	'} );',
+					        	'output.return( result );',
+					        '}'
+					      ].join( '\n' ),
+					input: {
+						value: 'Hello Crocuta . This is a Test .'
+					}
+				} );
+			} );
+			
+			socket.on( 'err', function( result ){
+				unit.ok( false, 'Joule error was thrown.' );
+				clearTimeout( timeout );
+				ed_server.stop( );
+				test_shenzi.close( );
+				unit.done();
+			} );
+			
+			socket.on( 'joule-result', function( result ){
+				unit.deepEqual( result, {
+					Hello: 1,
+					Crocuta: 1,
+					'.': 2,
+					This: 1,
+					is: 1,
+					a: 1,
+					Test: 1
+				}, 'Joule Returned Correct Results.' );
+				clearTimeout( timeout );
+				ed_server.stop( );
+				test_shenzi.close( );
+				unit.done();
+			} );
+		} );
+		
+		//test_banzai.on( 'connection', function( /* socket */ ){
+		//	unit.ok( true, 'Connected to Banzai.' );
+		//} );
+		
+		test_shenzi.listen( 2102 ); 
+		//test_banzai.listen( 2103 ); 
+		
+		ed_server = new Ed( );
+	}
+};
