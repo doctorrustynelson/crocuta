@@ -20,8 +20,11 @@ module.exports = function( grunt ){
 		},
 		
 		nodeunit: {
-			tests: [
+			all: [
 				'tests/**/*tests.js'
+			],
+			ed: [
+			    'tests/ed-server-tests.js'
 			],
 			options: {
 				reporter: 'verbose'
@@ -39,6 +42,6 @@ module.exports = function( grunt ){
 	grunt.loadNpmTasks( 'grunt-contrib-nodeunit' );
 	grunt.loadNpmTasks( 'grunt-coveralls' );
 	
-	grunt.registerTask( 'test', [ 'jshint', 'nodeunit' ] );
+	grunt.registerTask( 'test', [ 'jshint', 'nodeunit:all' ] );
 	grunt.registerTask( 'default', [ 'test' ] );
 };
