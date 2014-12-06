@@ -235,8 +235,8 @@ module.exports.processJouleTests = {
 				} );
 			} );
 			
-			socket.on( 'err', function( result ){
-				unit.equal( result.type, 'joule', 'Joule error was thrown.' );
+			socket.on( 'err', function( error ){
+				unit.equal( error.type, 'joule', 'Joule error was thrown.' );
 				clearTimeout( timeout );
 				ed_server.stop( );
 				test_shenzi.close( );
@@ -291,7 +291,7 @@ module.exports.processJouleTests = {
 				} );
 			} );
 			
-			socket.on( 'err', function( result ){
+			socket.on( 'err', function( /* error */ ){
 				unit.ok( false, 'Joule error was thrown.' );
 				clearTimeout( timeout );
 				ed_server.stop( );
