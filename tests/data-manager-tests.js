@@ -30,9 +30,16 @@
 var fs = require( 'fs' );
 var path = require( 'path' );
 var DataManager = require( '../lib/data-manager.js' );
-var data_root = 'C:\\Users\\rusty\\crocuta-data';
+var config = require( '../lib/utils/config' );
+config.reinitialize( path.resolve( __dirname, './config/test.config.json' ) );
+var data_root = config.get( 'ed.data.location' );
 
 module.exports.setUp = function( callback ){
+	
+	if( !fs.existsSync( data_root ) ){
+		fs.mkdirSync( data_root );
+	}
+	
 	fs.readdirSync( data_root ).forEach( function( file ){
 		fs.unlinkSync( path.join( data_root, file ) );
 	} );

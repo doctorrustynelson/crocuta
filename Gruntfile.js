@@ -26,6 +26,9 @@ module.exports = function( grunt ){
 			connection: [
 			    'tests/connection-manager-tests.js'
 			],
+			config: [
+			    'tests/config-tests.js'
+			],
 			data: [
 			    'tests/data-manager-tests.js'
 			],

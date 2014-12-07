@@ -6,6 +6,12 @@
 
 	"banzai": {
 		"port": 2103
+	},
+	
+	"ed": {
+		"data": {
+			"location": "test-data"
+		}
 	}
 	
 }

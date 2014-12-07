@@ -24,7 +24,8 @@
   	"dependencies": {
   		"socket.io": "1.2.0",
   		"socket.io-client": "1.2.0",
-		"chalk": "0.5.1"
+		"chalk": "0.5.1",
+		"extend": "2.0.0"
   	},
   	"devDependencies": {
 	  	"grunt": "0.4.5",
