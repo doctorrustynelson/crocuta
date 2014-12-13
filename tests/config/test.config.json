@@ -10,7 +10,7 @@
 	
 	"ed": {
 		"data": {
-			"location": "test-data"
+			"location": "tests/test-data"
 		}
 	}
 	

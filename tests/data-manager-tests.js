@@ -46,6 +46,13 @@ module.exports.setUp = function( callback ){
 	callback( );
 };
 
+module.exports.tearDown = function( callback ){
+	fs.readdirSync( data_root ).forEach( function( file ){
+		fs.unlinkSync( path.join( data_root, file ) );
+	} );
+	callback( );
+};
+
 module.exports.listKeysTests = {
 	
 	emptyOnNewStartup: function( unit ){
