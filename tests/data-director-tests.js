@@ -105,7 +105,7 @@ module.exports.getLocationsTests = {
 		
 		unit.done();
 	}
-}
+};
 
 module.exports.startStoreTests = {
 	
@@ -203,7 +203,7 @@ module.exports.startStoreTests = {
 		unit.deepEqual( director.getLocations( 'hello.world.to' ), [ 'loc1' ], 'New startStore has locations.' );
 		unit.done();
 	}
-}
+};
 
 module.exports.finishStoreTests = {
 		
@@ -256,7 +256,7 @@ module.exports.finishStoreTests = {
 		unit.deepEqual( director.getLocations( 'hello.world.to' ), [ 'loc1' ], 'New startStore has locations.' );
 		unit.done();
 	}
-}
+};
 
 module.exports.registerStoreTests = {
 		
@@ -273,7 +273,7 @@ module.exports.registerStoreTests = {
 		
 		unit.done();
 	}
-}
+};
 
 module.exports.registerStoreTests = {
 		
@@ -291,16 +291,13 @@ module.exports.registerStoreTests = {
 		director.lostStore( 'loc1' );
 		
 		unit.throws( function( ) { 
-			director.getState( 'hello.world.from.crocuta', loc1 );
+			director.getState( 'hello.world.from.crocuta', 'loc1' );
 		}, undefined, 'Lost key throws an Error.' );
 		
 		unit.throws( function( ) { 
-			director.getState( 'hello.world.from.rusty', loc1 );
+			director.getState( 'hello.world.from.rusty', 'loc1' );
 		}, undefined, 'Lost key throws an Error.' );
 		
 		unit.done();
 	}
-}
-
-
-
+};
