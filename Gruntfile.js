@@ -30,7 +30,8 @@ module.exports = function( grunt ){
 			    'tests/config-tests.js'
 			],
 			data: [
-			    'tests/data-manager-tests.js'
+			    'tests/data-manager-tests.js',
+			    'tests/data-director-tests.js'
 			],
 			ed: [
 			    'tests/ed-server-tests.js'
