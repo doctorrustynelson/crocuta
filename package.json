@@ -1,10 +1,10 @@
 {
 	"name": "crocuta",
   	"version": "0.0.1",
-  	"description": "Node Map Reduce and Distributed Computing",
-  	"keywords": [
-  	    "map reduce",
-  	  	"distributed"
+	"description": "Node Map Reduce and Distributed Computing",
+	"keywords": [
+		"map reduce",
+		"distributed"
   	],
   	"author": "Rusty Nelson",
 	"repository": {
@@ -18,9 +18,9 @@
   	"main": "lib/core.js",
 	"scripts": {
 		"test": "grunt test",
-		"coverage": "istanbul cover --preload-sources -x **/bin/** -x **/examples/** -x Gruntfile.js -v --print both grunt",
-	    "ci": "npm run-script coverage && grunt coveralls",
-	    "crocuta": "node ./bin/crocuta.js"
+		"coverage": "istanbul cover --preload-sources -x **/bin/** -x **/examples/** -x **/lib/cli/servers/** -x Gruntfile.js -v --print both grunt",
+		"ci": "npm run-script coverage && grunt coveralls",
+		"crocuta": "node ./bin/crocuta.js"
 	},
 	"bin": {
 		"crocuta": "./bin/corcuta.js"
