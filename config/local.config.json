@@ -1,12 +1,12 @@
 {
 	
 	"shenzi": {
-		"host": "localhost",
+		"host": "127.0.0.1",
 		"port": 2102
 	},
 
 	"banzai": {
-		"host": "localhost",
+		"host": "127.0.0.1",
 		"port": 2103,
 		"data": {
 			"replication": 1
@@ -15,7 +15,7 @@
 	
 	"ed": {
 		"data": {
-			"location": "tests/test-data"
+			"location": "temp"
 		}
 	}
 	

@@ -28,6 +28,8 @@
  */
 var path = require( 'path' );
 var config = require( '../lib/utils/config.js' );
+process.env.CROCUTA_CONFIG = '';
+
 
 module.exports.getTests = {
 	

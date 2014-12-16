@@ -223,7 +223,7 @@ module.exports.finishStoreTests = {
 		unit.done();
 	},
 	
-	startChildOfStarted: function( unit ){
+	finishChildOfStarted: function( unit ){
 		var director = new DataDirector( );
 		
 		director.startStore( 'hello.world.to', 'loc1' );
@@ -240,7 +240,7 @@ module.exports.finishStoreTests = {
 		unit.done();
 	},
 	
-	startParentOfStarted: function( unit ){
+	finishParentOfStarted: function( unit ){
 		var director = new DataDirector( );
 		
 		director.startStore( 'hello.world.to', 'loc1' );
@@ -258,12 +258,65 @@ module.exports.finishStoreTests = {
 	}
 };
 
-module.exports.registerStoreTests = {
+module.exports.failedStoreTests = {
+		
+	simpleFail: function( unit ){
+		var director = new DataDirector( );
+		
+		director.startStore( 'hello.world.from.crocuta', 'loc1' );
+		
+		unit.equal( director.getState( 'hello.world.from.crocuta' ), 'pending', 'New startStore is pending.' );
+		unit.deepEqual( director.getLocations( 'hello.world.from.crocuta' ), [ 'loc1' ], 'New startStore has locations.' );
+		
+		director.failedStore( 'hello.world.from.crocuta', 'loc1' );
+		
+		unit.equal( director.getState( 'hello.world.from.crocuta' ), 'failed', 'Failed State.' );
+		unit.deepEqual( director.getLocations( 'hello.world.from.crocuta' ), [ 'loc1' ], 'Failed store still has locations.' );
+		
+		unit.done();
+	},
+	
+	failChildOfStarted: function( unit ){
+		var director = new DataDirector( );
+		
+		director.startStore( 'hello.world.to', 'loc1' );
+		
+		unit.equal( director.getState( 'hello.world.to' ), 'pending', 'New startStore is pending.' );
+		unit.deepEqual( director.getLocations( 'hello.world.to' ), [ 'loc1' ], 'New startStore has locations.' );
+
+		unit.throws( function( ){
+			director.failedStore( 'hello.world.to.crocuta' );
+		}, undefined, 'Child of previous store should throw an Error.' );
+		
+		unit.equal( director.getState( 'hello.world.to' ), 'pending', 'New startStore is pending.' );
+		unit.deepEqual( director.getLocations( 'hello.world.to' ), [ 'loc1' ], 'New startStore has locations.' );
+		unit.done();
+	},
+	
+	failParentOfStarted: function( unit ){
+		var director = new DataDirector( );
+		
+		director.startStore( 'hello.world.to', 'loc1' );
+		
+		unit.equal( director.getState( 'hello.world.to' ), 'pending', 'New startStore is pending.' );
+		unit.deepEqual( director.getLocations( 'hello.world.to' ), [ 'loc1' ], 'New startStore has locations.' );
+
+		unit.throws( function( ){
+			director.failedStore( 'hello' );
+		}, undefined, 'Parent of previous store should throw an Error.' );
+		
+		unit.equal( director.getState( 'hello.world.to' ), 'pending', 'New startStore is pending.' );
+		unit.deepEqual( director.getLocations( 'hello.world.to' ), [ 'loc1' ], 'New startStore has locations.' );
+		unit.done();
+	}
+};
+
+module.exports.registerLocationTests = {
 		
 	simpleRegistor: function( unit ){
 		var director = new DataDirector( );
 		
-		director.registerStore( 'loc1', [ 'hello.world.from.crocuta', 'hello.world.from.rusty' ] );
+		director.registerLocation( 'loc1', [ 'hello.world.from.crocuta', 'hello.world.from.rusty' ] );
 		
 		unit.equal( director.getState( 'hello.world.from.crocuta' ), 'stored', 'Store Complete.' );
 		unit.deepEqual( director.getLocations( 'hello.world.from.crocuta' ), [ 'loc1' ], 'Completed store has locations.' );
@@ -275,12 +328,12 @@ module.exports.registerStoreTests = {
 	}
 };
 
-module.exports.registerStoreTests = {
+module.exports.lostLocationTests = {
 		
 	simpleLost: function( unit ){
 		var director = new DataDirector( );
 		
-		director.registerStore( 'loc1', [ 'hello.world.from.crocuta', 'hello.world.from.rusty' ] );
+		director.registerLocation( 'loc1', [ 'hello.world.from.crocuta', 'hello.world.from.rusty' ] );
 		
 		unit.equal( director.getState( 'hello.world.from.crocuta' ), 'stored', 'Store Complete.' );
 		unit.deepEqual( director.getLocations( 'hello.world.from.crocuta' ), [ 'loc1' ], 'Completed store has locations.' );
@@ -288,7 +341,7 @@ module.exports.registerStoreTests = {
 		unit.equal( director.getState( 'hello.world.from.rusty' ), 'stored', 'Store Complete.' );
 		unit.deepEqual( director.getLocations( 'hello.world.from.rusty' ), [ 'loc1' ], 'Completed store has locations.' );
 		
-		director.lostStore( 'loc1' );
+		director.lostLocation( 'loc1' );
 		
 		unit.throws( function( ) { 
 			director.getState( 'hello.world.from.crocuta', 'loc1' );

@@ -1,12 +1,15 @@
 {
 	
 	"shenzi": {
-		"host": "127.0.0.1",
 		"port": 2102
 	},
 
 	"banzai": {
-		"host": "127.0.0.1",
+		"connection": {
+			"options": {
+				"multiplex": false
+			}
+		},
 		"port": 2103,
 		"data": {
 			"replication": 3

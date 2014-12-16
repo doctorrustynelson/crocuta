@@ -36,6 +36,12 @@ module.exports = function( grunt ){
 			ed: [
 			    'tests/ed-server-tests.js'
 			],
+			banzai: [
+			    'tests/banzai-server-tests.js'
+			],
+			integration: [
+			    'tests/local-integration-tests.js'
+			],
 			options: {
 				reporter: 'verbose'
 			}

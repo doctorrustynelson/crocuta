@@ -19,13 +19,19 @@
 	"scripts": {
 		"test": "grunt test",
 		"coverage": "istanbul cover --preload-sources -x **/bin/** -x **/examples/** -x Gruntfile.js -v --print both grunt",
-	    "ci": "npm run-script coverage && grunt coveralls"
+	    "ci": "npm run-script coverage && grunt coveralls",
+	    "crocuta": "node ./bin/crocuta.js"
+	},
+	"bin": {
+		"crocuta": "./bin/corcuta.js"
 	},
   	"dependencies": {
   		"socket.io": "1.2.0",
   		"socket.io-client": "1.2.0",
 		"chalk": "0.5.1",
-		"extend": "2.0.0"
+		"extend": "2.0.0",
+		"commander": "2.5.0",
+		"temp": "0.8.1"
   	},
   	"devDependencies": {
 	  	"grunt": "0.4.5",
