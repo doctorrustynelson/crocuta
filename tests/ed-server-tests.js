@@ -263,15 +263,18 @@ module.exports.processJouleTests = {
 			socket.on( 'register', function( /* data */ ){
 				unit.ok( true, 'Registered with Shenzi.' );
 				
-				socket.emit( 'joule', {
-					deploy: 'anonymous',
-					func: 'function( input, output, utils ){ output.return( 12345 ); }'
+				socket.emit( 'joule', { 
+					input: undefined,
+					joule: {
+						deploy: 'anonymous',
+						func: 'function( input, output, utils ){ return 12345; }'
+					}
 				} );
 			} );
 			
-			socket.on( 'joule-result', function( result ){
+			socket.on( 'joule:complete', function( result ){
 				unit.ok( result.success, 'Joule returned successfully.' );
-				unit.equal( result.result, 12345, 'Joule returned correct result.' );
+				unit.equal( result.output, 12345, 'Joule returned correct result.' );
 				clearTimeout( timeout );
 				ed_server.stop( );
 				test_shenzi.close( );
@@ -314,12 +317,15 @@ module.exports.processJouleTests = {
 				unit.ok( true, 'Registered with Shenzi.' );
 				
 				socket.emit( 'joule', {
-					deploy: 'bad-deploy-type',
-					func: 'function( input, output, utils ){ output.return( 12345 ); }'
+					input: undefined,
+					joule: {
+						deploy: 'bad-deploy-type',
+						func: 'function( input, output, utils ){ return 12345; }'
+					}
 				} );
 			} );
 			
-			socket.on( 'joule-result', function( result ){
+			socket.on( 'joule:complete', function( result ){
 				unit.ok( !result.success, 'Joule returned unsuccessfully.' );
 				stageComplete();
 			} );
@@ -355,15 +361,17 @@ module.exports.processJouleTests = {
 				unit.ok( true, 'Registered with Shenzi.' );
 				
 				socket.emit( 'joule', {
-					deploy: 'anonymous',
-					func: [ 'function( input, output, utils ){',
-					        	'var result = {};',
-					        	'input.value.split( " " ).forEach( function( word ){',
-					        		'result[ word ] = ( result[ word ] === undefined ? 1 : result[ word ] + 1 );',
-					        	'} );',
-					        	'output.return( result );',
-					        '}'
-					      ].join( '\n' ),
+					joule: {
+						deploy: 'anonymous',
+						func: [ 'function( input, output, utils ){',
+						        	'var result = {};',
+						        	'input.value.split( " " ).forEach( function( word ){',
+						        		'result[ word ] = ( result[ word ] === undefined ? 1 : result[ word ] + 1 );',
+						        	'} );',
+						        	'return result;',
+						        '}'
+						      ].join( '\n' ),
+					},
 					input: {
 						value: 'Hello Crocuta . This is a Test .'
 					}
@@ -378,9 +386,9 @@ module.exports.processJouleTests = {
 				unit.done();
 			} );
 			
-			socket.on( 'joule-result', function( result ){
+			socket.on( 'joule:complete', function( result ){
 				unit.ok( result.success, 'Joule returned successfully.' );
-				unit.deepEqual( result.result, {
+				unit.deepEqual( result.output, {
 					Hello: 1,
 					Crocuta: 1,
 					'.': 2,

@@ -46,25 +46,28 @@ module.exports.setUp = function( callback ){
 	callback( );
 };
 
-module.exports.setUp = function( callback ){
-	shenzi = new Shenzi( );
-	banzai = new Banzai( );
-	ed = new Ed( );
+module.exports.tearDown = function( callback ){
+	shenzi.stop();
+	banzai.stop();
+	ed.stop();
 	callback( );
 };
 
 module.exports.simpleTests = {
 	
 	printJob: function( unit ){
-		var timeout = setTimeout( function( ){
-			unit.ok( false, 'Test Timed Out.' );
-			unit.done();
-		}, 10000 );
-		
 		var Crocuta = require( '../lib/client' );
 		var crocuta = new Crocuta( );
 		
-		var job = crocuta.createJob( 'hello world' ).joule( function( input, output, reporter ){
+		var timeout = setTimeout( function( ){
+			unit.ok( false, 'Test Timed Out.' );
+			crocuta.stop();
+			unit.done();
+		}, 10000 );
+		
+		
+		
+		var job = crocuta.createJob( 'hello world' ).joule( function( /* input, output, reporter */ ){
 			console.log( arguments );
 			console.log( 'Hello Crocuta!' );
 			return 'Hello User!';
@@ -72,10 +75,46 @@ module.exports.simpleTests = {
 	
 		crocuta.onReady( function( ){
 			unit.ok( true, 'onReady fired.' );
-			job.send( function( result ){
-				unit.equal( result, 'Hello User!', 'Job returned correct result.' );
-				clearTimeout( timeout );
-				unit.done( );
+			job.send( function( err, job ){
+				unit.ok( !err, 'No error on send' );
+				job.start( undefined, function( err, result ){
+					console.log( 'hello' );
+					unit.equal( result, 'Hello User!', 'Job returned correct result.' );
+					clearTimeout( timeout );
+					crocuta.stop();
+					unit.done( );
+				} );
+			} );
+		} );
+	},
+	
+	jobWithInputs: function( unit ){
+		var Crocuta = require( '../lib/client' );
+		var crocuta = new Crocuta( );
+		
+		var timeout = setTimeout( function( ){
+			unit.ok( false, 'Test Timed Out.' );
+			crocuta.stop();
+			unit.done();
+		}, 10000 );
+		
+		var job = crocuta.createJob( 'add' ).joule( function( input /*, output, reporter */ ){
+			console.log( arguments );
+			console.log( 'Hello Crocuta!' );
+			return input + 1;
+		} );
+	
+		crocuta.onReady( function( ){
+			unit.ok( true, 'onReady fired.' );
+			job.send( function( err, job ){
+				unit.ok( !err, 'No error on send' );
+				job.start( 1, function( err, result ){
+					console.log( 'hello' );
+					unit.equal( result, 2, 'Job returned correct result.' );
+					clearTimeout( timeout );
+					crocuta.stop();
+					unit.done( );
+				} );
 			} );
 		} );
 	}
