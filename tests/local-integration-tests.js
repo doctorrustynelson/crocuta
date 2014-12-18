@@ -78,7 +78,6 @@ module.exports.simpleTests = {
 			job.send( function( err, job ){
 				unit.ok( !err, 'No error on send' );
 				job.start( undefined, function( err, result ){
-					console.log( 'hello' );
 					unit.equal( result, 'Hello User!', 'Job returned correct result.' );
 					clearTimeout( timeout );
 					crocuta.stop();
@@ -100,7 +99,6 @@ module.exports.simpleTests = {
 		
 		var job = crocuta.createJob( 'add' ).joule( function( input /*, output, reporter */ ){
 			console.log( arguments );
-			console.log( 'Hello Crocuta!' );
 			return input + 1;
 		} );
 	
@@ -109,12 +107,110 @@ module.exports.simpleTests = {
 			job.send( function( err, job ){
 				unit.ok( !err, 'No error on send' );
 				job.start( 1, function( err, result ){
-					console.log( 'hello' );
 					unit.equal( result, 2, 'Job returned correct result.' );
 					clearTimeout( timeout );
 					crocuta.stop();
 					unit.done( );
 				} );
+			} );
+		} );
+	}
+};
+
+module.exports.multiStagePipeTests = {
+	multiStageJobWithInputs: function( unit ){
+		var Crocuta = require( '../lib/client' );
+		var crocuta = new Crocuta( );
+		
+		var timeout = setTimeout( function( ){
+			unit.ok( false, 'Test Timed Out.' );
+			crocuta.stop();
+			unit.done();
+		}, 10000 );
+		
+		var job = crocuta.createJob( 'add and multiply' )
+			.joule( function( input /*, output, reporter */ ){
+				console.log( arguments );
+				return input + 3;
+			} ).joule( function( input /*, output, reporter */ ){
+				console.log( arguments );
+				return input * 3;
+			} );
+	
+		crocuta.onReady( function( ){
+			unit.ok( true, 'onReady fired.' );
+			job.send( function( err, job ){
+				unit.ok( !err, 'No error on send' );
+				job.start( 1, function( err, result ){
+					unit.equal( result, 12, 'Job returned correct result.' );
+					clearTimeout( timeout );
+					crocuta.stop();
+					unit.done( );
+				} );
+			} );
+		} );
+	}
+};
+
+module.exports.parallelTests = {
+	simpleO2MandM2OJob: function( unit ){
+		var Crocuta = require( '../lib/client' );
+		var crocuta = new Crocuta( );
+		
+		var timeout = setTimeout( function( ){
+			unit.ok( false, 'Test Timed Out.' );
+			crocuta.stop();
+			unit.done();
+		}, 10000 );
+		
+		var job = crocuta.createJob( 'parallel' )
+			.o2mjoule( function( input /*, output, reporter */ ){
+				console.log( arguments );
+				return input.split( '\n' ).reduce( function( out, value, index ){ out[index] = value; return out; }, {} );
+			} ).joule( function( input /*, output, reporter */ ){
+				console.log( arguments );
+				return input.split( ' ' );
+			} ).m2ojoule( function( inputs /*, output, reporter */ ){
+				console.log( arguments );
+				var result = { };
+				var keys = Object.keys( inputs );
+				keys.forEach( function( key ){
+					inputs[ key ].forEach( function( input ){
+						result[ input ] = ( result[ input ] === undefined ? 1 : result[ input ] + 1 );
+					} );
+				} );
+				return result;
+			} );
+	
+		crocuta.onReady( function( ){
+			unit.ok( true, 'onReady fired.' );
+			job.send( function( err, job ){
+				unit.ok( !err, 'No error on send' );
+				job.start( [
+				        'Hello Crocuta',
+				        'Hello World',
+				        'Goodbye Crocuta',
+				        'Nice day from Crocuta'
+				    ].join( '\n' ),
+				    function( err, result ){
+						unit.deepEqual( 
+							result, 
+							{
+								'Hello': 2,
+								'Crocuta': 3,
+								'World': 1,
+								'Goodbye': 1,
+								'Nice': 1,
+								'day': 1,
+								'from': 1
+							}, 
+							'Job returned correct result.'
+						);
+						clearTimeout( timeout );
+						crocuta.stop();
+						unit.done( );
+					}
+				);
 			} );
 		} );
 	}
