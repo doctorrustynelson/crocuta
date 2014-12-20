@@ -67,10 +67,12 @@ module.exports.simpleTests = {
 		
 		
 		
-		var job = crocuta.createJob( 'hello world' ).joule( function( /* input, output, reporter */ ){
-			console.log( arguments );
+		var job = crocuta.createJob( 'hello world' ).joule( function( ){
+			/* global result: true */
+			/* global input */
+			
 			console.log( 'Hello Crocuta!' );
-			return 'Hello User!';
+			result = 'Hello User!';
 		} );
 	
 		crocuta.onReady( function( ){
@@ -97,9 +99,11 @@ module.exports.simpleTests = {
 			unit.done();
 		}, 10000 );
 		
-		var job = crocuta.createJob( 'add' ).joule( function( input /*, output, reporter */ ){
-			console.log( arguments );
-			return input + 1;
+		var job = crocuta.createJob( 'add' ).joule( function( ){
+			/* global result: true */
+			/* global input */
+			
+			result = input + 1;
 		} );
 	
 		crocuta.onReady( function( ){
@@ -129,12 +133,16 @@ module.exports.multiStagePipeTests = {
 		}, 10000 );
 		
 		var job = crocuta.createJob( 'add and multiply' )
-			.joule( function( input /*, output, reporter */ ){
-				console.log( arguments );
-				return input + 3;
-			} ).joule( function( input /*, output, reporter */ ){
-				console.log( arguments );
-				return input * 3;
+			.joule( function( ){
+				/* global result: true */
+				/* global input */
+				
+				result = input + 3;
+			} ).joule( function( ){
+				/* global result: true */
+				/* global input */
+				
+				result = input * 3;
 			} );
 	
 		crocuta.onReady( function( ){
@@ -164,22 +172,27 @@ module.exports.parallelTests = {
 		}, 10000 );
 		
 		var job = crocuta.createJob( 'parallel' )
-			.o2mjoule( function( input /*, output, reporter */ ){
-				console.log( arguments );
-				return input.split( '\n' ).reduce( function( out, value, index ){ out[index] = value; return out; }, {} );
-			} ).joule( function( input /*, output, reporter */ ){
-				console.log( arguments );
-				return input.split( ' ' );
-			} ).m2ojoule( function( inputs /*, output, reporter */ ){
-				console.log( arguments );
-				var result = { };
-				var keys = Object.keys( inputs );
+			.o2mjoule( function( ){
+				/* global result: true */
+				/* global input */
+				
+				result = input.split( '\n' ).reduce( function( out, value, index ){ out[index] = value; return out; }, {} );
+			} ).joule( function( ){
+				/* global result: true */
+				/* global input */
+				
+				result = input.split( ' ' );
+			} ).m2ojoule( function( ){
+				/* global result: true */
+				/* global input */
+				
+				result = { };
+				var keys = Object.keys( input );
 				keys.forEach( function( key ){
-					inputs[ key ].forEach( function( input ){
-						result[ input ] = ( result[ input ] === undefined ? 1 : result[ input ] + 1 );
+					input[ key ].forEach( function( value ){
+						result[ value ] = ( result[ value ] === undefined ? 1 : result[ value ] + 1 );
 					} );
 				} );
-				return result;
 			} );
 	
 		crocuta.onReady( function( ){
@@ -215,3 +228,125 @@ module.exports.parallelTests = {
 		} );
 	}
 };
+
+//module.exports.wordCountExampleTest = function( unit ){
+//	
+//	var Crocuta = require( '../lib/client' );
+//	var crocuta = new Crocuta( );
+//	
+//	// Timeout is not part of example.
+//	var timeout = setTimeout( function( ){
+//		unit.ok( false, 'Test Timed Out.' );
+//		crocuta.stop();
+//		unit.done();
+//	}, 10000 );
+//	// End timeout
+//	
+//	//crocuta.uploadFile( /*key*/, /*file_location*/, /*force*/, /*callback*/ );
+//	//crocuta.uploadDir( /*key*/, /*dir_location*/, /*recursive*/, /*force*/, /*callback*/ );
+//	//crocuta.upload( /*key*/, /*contents*/, /*force*/, /*callback*/ );
+//	//crocuta.download( /*key*/, /*callback*/ );
+//	//crocuta.delete( /*key*/, /*force*/, /*callback*/ );
+//	// + sync versions of all the previous
+//	
+//	var job = crocuta.createJob( 'word count' )
+//		.joule( function( input /*, output, reporter */ ){
+//			console.log( arguments );
+//			return fileSystem.getKeysUnder( input );
+//		}, 'directory contents' )
+//		.joule( function( input /*, output, reporter */ ){
+//			console.log( arguments );
+//			var mapping = {};
+//			input.forEach( function( key ){
+//				mapping[ key ] = fileSystem.getLocationsOf( key );
+//			} );
+//			return mapping;
+//		}, 'file mapper' )
+//		.o2mjoule( 'direct key to server' ) // Proprietary Joule.
+//		.joule( function( input /*, output, reporter */ ){
+//			console.log( arguments );
+//			return fileSystem.readSync( input ).split( ' ' );
+//		}, 'content splitter' )
+//		.m2ojoule( function( inputs /*, output, reporter */ ){
+//			console.log( arguments );
+//			var result = { };
+//			var keys = Object.keys( inputs );
+//			keys.forEach( function( key ){
+//				inputs[ key ].forEach( function( input ){
+//					result[ input ] = ( result[ input ] === undefined ? 1 : result[ input ] + 1 );
+//				} );
+//			} );
+//			return result;
+//		}, 'word counter' );
+//	
+//	var files_to_upload = 2;
+//	function file_uploaded( ){
+//		if( --files_to_upload <= 0 ){
+//			unit.ok( true, 'Finished uploading all files.' );
+//			
+//			job.send( function( err, job ){
+//				unit.ok( !err, 'No error on send' );
+//				
+//				job.start( 
+//					'input',
+//				    function( err, result ){
+//						unit.deepEqual( 
+//							result, 
+//							{
+//								'Hello': 1,
+//								'World': 2,
+//								'Bye': 1,
+//								'Crocuta': 2,
+//								'Goodbye': 1
+//							}, 
+//							'Job returned correct result.'
+//						);
+//						clearTimeout( timeout );
+//						crocuta.stop();
+//						unit.done( );
+//					}
+//				);
+//			} );
+//			
+//		}
+//	}
+//	
+//	crocuta.onReady( function( ){
+//		unit.ok( true, 'onReady fired.' );
+//		
+//		crocuta.upload( 
+//			'input.file0', 
+//			fs.readFileSync( path.resolve( __dirname, '../examples/word-count/input/input-000.txt' ) ), 
+//			function( err ){
+//				if( err ){
+//					unit.ok( false, 'Upload failed' );
+//					clearTimeout( timeout );
+//					console.log( err );
+//					unit.done();
+//				} else {
+//					unit.ok( true, 'Finished uploading file input-000.txt.' );
+//					file_uploaded();
+//				}
+//				
+//			} 
+//		);
+//		
+//		crocuta.upload( 
+//			'input.file1', 
+//			fs.readFileSync( path.resolve( __dirname, '../examples/word-count/input/input-001.txt' ) ), 
+//			function( err ){
+//				if( err ){
+//					unit.ok( false, 'Upload failed' );
+//					clearTimeout( timeout );
+//					console.log( err );
+//					unit.done();
+//				} else {
+//					unit.ok( true, 'Finished uploading file input-001.txt.' );
+//					file_uploaded();
+//				}
+//				
+//			} 
+//		);
+//	} );
+//};
+

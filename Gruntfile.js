@@ -23,6 +23,9 @@ module.exports = function( grunt ){
 			all: [
 				'tests/**/*tests.js'
 			],
+			banzai: [
+			    'tests/banzai-server-tests.js'
+			],
 			connection: [
 			    'tests/connection-manager-tests.js'
 			],
@@ -36,8 +39,8 @@ module.exports = function( grunt ){
 			ed: [
 			    'tests/ed-server-tests.js'
 			],
-			banzai: [
-			    'tests/banzai-server-tests.js'
+			filesystem: [
+			    'tests/joule-fileSystem-tests.js'
 			],
 			integration: [
 			    'tests/local-integration-tests.js'

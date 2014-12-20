@@ -267,7 +267,7 @@ module.exports.processJouleTests = {
 					input: undefined,
 					joule: {
 						deploy: 'anonymous',
-						func: 'function( input, output, utils ){ return 12345; }'
+						func: 'function( ){ result = 12345; }'
 					}
 				} );
 			} );
@@ -320,7 +320,7 @@ module.exports.processJouleTests = {
 					input: undefined,
 					joule: {
 						deploy: 'bad-deploy-type',
-						func: 'function( input, output, utils ){ return 12345; }'
+						func: 'function( ){ result = 12345; }'
 					}
 				} );
 			} );
@@ -363,12 +363,11 @@ module.exports.processJouleTests = {
 				socket.emit( 'joule', {
 					joule: {
 						deploy: 'anonymous',
-						func: [ 'function( input, output, utils ){',
-						        	'var result = {};',
+						func: [ 'function( ){',
+						        	'result = {};',
 						        	'input.value.split( " " ).forEach( function( word ){',
 						        		'result[ word ] = ( result[ word ] === undefined ? 1 : result[ word ] + 1 );',
 						        	'} );',
-						        	'return result;',
 						        '}'
 						      ].join( '\n' ),
 					},
