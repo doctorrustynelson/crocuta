@@ -229,6 +229,51 @@ module.exports.parallelTests = {
 	}
 };
 
+module.exports.fileSystemTests = {
+	simpleUpload: function( unit ){
+		var Crocuta = require( '../lib/client' );
+		var crocuta = new Crocuta( );
+		
+		var timeout = setTimeout( function( ){
+			unit.ok( false, 'Test Timed Out.' );
+			crocuta.stop();
+			unit.done();
+		}, 10000 );
+		
+		var job = crocuta.createJob( 'add' ).joule( function( ){
+			/* global result: true */
+			/* global input */
+			/* global fileSystem */
+			
+			result = fileSystem.readSync( input );
+		} );
+	
+		crocuta.onReady( function( ){
+			unit.ok( true, 'onReady fired.' );
+			crocuta.upload( 'input', 'Hello Crocuta!', function( err ){
+				console.log( err );
+				if( err ){
+					unit.ok( false, 'input failed to be uploaded.' );
+					clearTimeout( timeout );
+					crocuta.stop();
+					unit.done();
+				} else {
+					unit.ok( true, 'input was uploaded.' );
+					job.send( function( err, job ){
+						unit.ok( !err, 'No error on send' );
+						job.start( 'input', function( err, result ){
+							unit.equal( result, 'Hello Crocuta!', 'Job returned correct result.' );
+							clearTimeout( timeout );
+							crocuta.stop();
+							unit.done( );
+						} );
+					} );
+				}
+			} );
+		} );
+	}
+};
+
 //module.exports.wordCountExampleTest = function( unit ){
 //	
 //	var Crocuta = require( '../lib/client' );

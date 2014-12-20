@@ -40,7 +40,7 @@ module.exports = function( grunt ){
 			    'tests/ed-server-tests.js'
 			],
 			filesystem: [
-			    'tests/joule-fileSystem-tests.js'
+			    'tests/file-system-tests.js'
 			],
 			integration: [
 			    'tests/local-integration-tests.js'
