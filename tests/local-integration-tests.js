@@ -249,7 +249,7 @@ module.exports.fileSystemTests = {
 			unit.done();
 		}, 10000 );
 		
-		var job = crocuta.createJob( 'add' ).joule( function( ){
+		var job = crocuta.createJob( 'read' ).joule( function( ){
 			/* global done */
 			/* global input */
 			/* global fileSystem */
@@ -272,6 +272,49 @@ module.exports.fileSystemTests = {
 						unit.ok( !err, 'No error on send' );
 						job.start( 'input', function( err, result ){
 							unit.equal( result, 'Hello Crocuta!', 'Job returned correct result.' );
+							clearTimeout( timeout );
+							crocuta.stop();
+							unit.done( );
+						} );
+					} );
+				}
+			} );
+		} );
+	},
+
+	simpleListLocations: function( unit ){
+		var Crocuta = require( '../lib/client' );
+		var crocuta = new Crocuta( );
+		
+		var timeout = setTimeout( function( ){
+			unit.ok( false, 'Test Timed Out.' );
+			crocuta.stop();
+			unit.done();
+		}, 10000 );
+		
+		var job = crocuta.createJob( 'list' ).joule( function( ){
+			/* global done */
+			/* global input */
+			/* global fileSystem */
+			
+			fileSystem.getLocationsOf( input, done );
+		} );
+	
+		crocuta.onReady( function( ){
+			unit.ok( true, 'onReady fired.' );
+			crocuta.upload( 'input', 'Hello Crocuta!', function( err ){
+				console.log( err );
+				if( err ){
+					unit.ok( false, 'input failed to be uploaded.' );
+					clearTimeout( timeout );
+					crocuta.stop();
+					unit.done();
+				} else {
+					unit.ok( true, 'input was uploaded.' );
+					job.send( function( err, job ){
+						unit.ok( !err, 'No error on send' );
+						job.start( 'input', function( err, result ){
+							unit.equal( result.length, 1, 'Job returned correct size result.' );
 							clearTimeout( timeout );
 							crocuta.stop();
 							unit.done( );
