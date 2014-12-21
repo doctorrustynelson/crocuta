@@ -83,8 +83,14 @@ module.exports.initialConnectionTests = {
 			
 		}
 		
-		test_shenzi.on( 'connection', function( /* socket */ ){
+		test_shenzi.on( 'connection', function( socket ){
 			unit.ok( true, 'Connected to Shenzi.' );
+			
+			socket.on( 'register', function( data, callback ){
+				data = data;
+				callback( '' );
+			} );
+			
 			stageCompleted( );
 		} );
 		
@@ -130,7 +136,9 @@ module.exports.initialConnectionTests = {
 			unit.ok( true, 'Connected to Shenzi.' );
 			stageCompleted( );
 			
-			socket.on( 'register', function( /* data */ ){
+			socket.on( 'register', function( data, callback ){
+				data = data;
+				callback( '' );
 				unit.ok( true, 'Registered with Shenzi.' );
 				stageCompleted( );
 			} );
@@ -187,7 +195,9 @@ module.exports.initialConnectionTests = {
 			unit.ok( true, 'Connected to Shenzi.' );
 			stageCompleted( );
 			
-			socket.on( 'register', function( /* data */ ){
+			socket.on( 'register', function( data, callback ){
+				data = data;
+				callback( '' );
 				unit.ok( true, 'Registered with Shenzi.' );
 				stageCompleted( );
 			} );
@@ -219,8 +229,13 @@ module.exports.stopTests = {
 		var test_banzai = new Server( );
 		var ed_server = null;
 		
-		test_shenzi.on( 'connection', function( /* socket */ ){
+		test_shenzi.on( 'connection', function( socket ){
 			unit.ok( true, 'Connected to Shenzi.' );
+			
+			socket.on( 'register', function( data, callback ){
+				data = data;
+				callback( '' );
+			} );
 		} );
 		
 		test_banzai.on( 'connection', function( /* socket */ ){
@@ -260,7 +275,9 @@ module.exports.processJouleTests = {
 		test_shenzi.on( 'connection', function( socket ){
 			unit.ok( true, 'Connected to Shenzi.' );
 			
-			socket.on( 'register', function( /* data */ ){
+			socket.on( 'register', function( data, callback ){
+				data = data;
+				callback( '' );
 				unit.ok( true, 'Registered with Shenzi.' );
 				
 				socket.emit( 'joule', { 
@@ -313,7 +330,9 @@ module.exports.processJouleTests = {
 		test_shenzi.on( 'connection', function( socket ){
 			unit.ok( true, 'Connected to Shenzi.' );
 			
-			socket.on( 'register', function( /* data */ ){
+			socket.on( 'register', function( data, callback ){
+				data = data;
+				callback( '' );
 				unit.ok( true, 'Registered with Shenzi.' );
 				
 				socket.emit( 'joule', {
@@ -357,7 +376,9 @@ module.exports.processJouleTests = {
 		test_shenzi.on( 'connection', function( socket ){
 			unit.ok( true, 'Connected to Shenzi.' );
 			
-			socket.on( 'register', function( /* data */ ){
+			socket.on( 'register', function( data, callback ){
+				data = data;
+				callback( '' );
 				unit.ok( true, 'Registered with Shenzi.' );
 				
 				socket.emit( 'joule', {
@@ -415,14 +436,14 @@ module.exports.listDataTests = {
 	listDataWhenUnInitialized: function( unit ){
 		unit.expect(5);
 		
-		//var test_shenzi = new Server( );
+		var test_shenzi = new Server( );
 		var test_banzai = new Server( );
 		var ed_server = null;
 		
 		var timeout = setTimeout( function( ){
 			unit.ok( 'false' );
 			ed_server.stop( );			
-			//test_shenzi.close( );
+			test_shenzi.close( );
 			test_banzai.close( );
 			unit.done( );
 		}, 5000 );
@@ -432,21 +453,19 @@ module.exports.listDataTests = {
 			if( --expected_number_of_completions <= 0 ){
 				clearTimeout( timeout );
 				ed_server.stop( );			
-				//test_shenzi.close( );
+				test_shenzi.close( );
 				test_banzai.close( );
 				unit.done();
 			}	
 		}
 		
-//			test_shenzi.on( 'connection', function( socket ){
-//				unit.ok( true, 'Connected to Shenzi.' );
-//				stageCompleted( );
-//				
-//				socket.on( 'register', function( /* data */ ){
-//					unit.ok( true, 'Registered with Shenzi.' );
-//					stageCompleted( );
-//				} );
-//			} );
+		test_shenzi.on( 'connection', function( socket ){
+			
+			socket.on( 'register', function( data, callback ){
+				data = data;
+				callback( '' );
+			} );
+		} );
 		
 		var banzai_connected = false;
 		test_banzai.on( 'connection', function( socket ){
@@ -472,7 +491,7 @@ module.exports.listDataTests = {
 			} );
 		} );
 		
-		//test_shenzi.listen( 2102 ); 
+		test_shenzi.listen( 2102 ); 
 		test_banzai.listen( 2103 ); 
 		
 		ed_server = new Ed( );
@@ -485,14 +504,14 @@ module.exports.listDataTests = {
 		fs.writeFileSync( path.join( data_root, 'json' ), '{ "something": false, "else": 1 }' );
 		fs.writeFileSync( path.join( data_root, 'nested.file' ), 'Cool' );
 		
-		//var test_shenzi = new Server( );
+		var test_shenzi = new Server( );
 		var test_banzai = new Server( );
 		var ed_server = null;
 		
 		var timeout = setTimeout( function( ){
 			unit.ok( 'false' );
 			ed_server.stop( );			
-			//test_shenzi.close( );
+			test_shenzi.close( );
 			test_banzai.close( );
 			unit.done( );
 		}, 5000 );
@@ -502,21 +521,19 @@ module.exports.listDataTests = {
 			if( --expected_number_of_completions <= 0 ){
 				clearTimeout( timeout );
 				ed_server.stop( );			
-				//test_shenzi.close( );
+				test_shenzi.close( );
 				test_banzai.close( );
 				unit.done();
 			}	
 		}
 		
-//		test_shenzi.on( 'connection', function( socket ){
-//			unit.ok( true, 'Connected to Shenzi.' );
-//			stageCompleted( );
-//			
-//			socket.on( 'register', function( /* data */ ){
-//				unit.ok( true, 'Registered with Shenzi.' );
-//				stageCompleted( );
-//			} );
-//		} );
+		test_shenzi.on( 'connection', function( socket ){
+			
+			socket.on( 'register', function( data, callback ){
+				data = data;
+				callback( '' );
+			} );
+		} );
 		
 		var banzai_connected = false;
 		test_banzai.on( 'connection', function( socket ){
@@ -542,7 +559,7 @@ module.exports.listDataTests = {
 			} );
 		} );
 		
-		//test_shenzi.listen( 2102 ); 
+		test_shenzi.listen( 2102 ); 
 		test_banzai.listen( 2103 ); 
 		
 		ed_server = new Ed( );
@@ -557,12 +574,14 @@ module.exports.getDataTests = {
 		fs.writeFileSync( path.join( data_root, 'json' ), '{ "something": false, "else": 1 }' );
 		fs.writeFileSync( path.join( data_root, 'nested.file' ), 'Cool' );
 		
+		var test_shenzi = new Server( );
 		var test_banzai = new Server( );
 		var ed_server = null;
 		
 		var timeout = setTimeout( function( ){
 			unit.ok( 'false' );
-			ed_server.stop( );			
+			ed_server.stop( );	
+			test_shenzi.close( );
 			test_banzai.close( );
 			unit.done( );
 		}, 10000 );
@@ -571,11 +590,20 @@ module.exports.getDataTests = {
 		function stageCompleted( ){
 			if( --expected_number_of_completions <= 0 ){
 				clearTimeout( timeout );
-				ed_server.stop( );			
+				ed_server.stop( );		
+				test_shenzi.close( );
 				test_banzai.close( );
 				unit.done();
 			}	
 		}
+		
+		test_shenzi.on( 'connection', function( socket ){
+			
+			socket.on( 'register', function( data, callback ){
+				data = data;
+				callback( '' );
+			} );
+		} );
 		
 		var banzai_connected = false;
 		test_banzai.on( 'connection', function( socket ){
@@ -602,6 +630,7 @@ module.exports.getDataTests = {
 			} );
 		} );
 		
+		test_shenzi.listen( 2102 ); 
 		test_banzai.listen( 2103 ); 
 		
 		ed_server = new Ed( );
@@ -614,12 +643,14 @@ module.exports.getDataTests = {
 		fs.writeFileSync( path.join( data_root, 'json' ), '{ "something": false, "else": 1 }' );
 		fs.writeFileSync( path.join( data_root, 'nested.file' ), 'Cool' );
 		
+		var test_shenzi = new Server( );
 		var test_banzai = new Server( );
 		var ed_server = null;
 		
 		var timeout = setTimeout( function( ){
 			unit.ok( 'false' );
-			ed_server.stop( );			
+			ed_server.stop( );
+			test_shenzi.close( );
 			test_banzai.close( );
 			unit.done( );
 		}, 10000 );
@@ -628,11 +659,20 @@ module.exports.getDataTests = {
 		function stageCompleted( ){
 			if( --expected_number_of_completions <= 0 ){
 				clearTimeout( timeout );
-				ed_server.stop( );			
+				ed_server.stop( );	
+				test_shenzi.close( );
 				test_banzai.close( );
 				unit.done();
 			}	
 		}
+		
+		test_shenzi.on( 'connection', function( socket ){
+			
+			socket.on( 'register', function( data, callback ){
+				data = data;
+				callback( '' );
+			} );
+		} );
 		
 		var banzai_connected = false;
 		test_banzai.on( 'connection', function( socket ){
@@ -675,6 +715,7 @@ module.exports.getDataTests = {
 			} );
 		} );
 		
+		test_shenzi.listen( 2102 ); 
 		test_banzai.listen( 2103 ); 
 		
 		ed_server = new Ed( );
@@ -687,12 +728,14 @@ module.exports.getDataTests = {
 		fs.writeFileSync( path.join( data_root, 'json' ), '{ "something": false, "else": 1 }' );
 		fs.writeFileSync( path.join( data_root, 'nested.file' ), 'Cool' );
 		
+		var test_shenzi = new Server( );
 		var test_banzai = new Server( );
 		var ed_server = null;
 		
 		var timeout = setTimeout( function( ){
 			unit.ok( 'false' );
-			ed_server.stop( );			
+			ed_server.stop( );		
+			test_shenzi.close( );
 			test_banzai.close( );
 			unit.done( );
 		}, 10000 );
@@ -701,11 +744,20 @@ module.exports.getDataTests = {
 		function stageCompleted( ){
 			if( --expected_number_of_completions <= 0 ){
 				clearTimeout( timeout );
-				ed_server.stop( );			
+				ed_server.stop( );	
+				test_shenzi.close( );
 				test_banzai.close( );
 				unit.done();
 			}	
 		}
+		
+		test_shenzi.on( 'connection', function( socket ){
+			
+			socket.on( 'register', function( data, callback ){
+				data = data;
+				callback( '' );
+			} );
+		} );
 		
 		var banzai_connected = false;
 		test_banzai.on( 'connection', function( socket ){
@@ -731,6 +783,7 @@ module.exports.getDataTests = {
 			} );
 		} );
 		
+		test_shenzi.listen( 2102 ); 
 		test_banzai.listen( 2103 ); 
 		
 		ed_server = new Ed( );
@@ -745,12 +798,14 @@ module.exports.loseDataTests = {
 		fs.writeFileSync( path.join( data_root, 'json' ), '{ "something": false, "else": 1 }' );
 		fs.writeFileSync( path.join( data_root, 'nested.file' ), 'Cool' );
 		
+		var test_shenzi = new Server( );
 		var test_banzai = new Server( );
 		var ed_server = null;
 		
 		var timeout = setTimeout( function( ){
 			unit.ok( 'false' );
-			ed_server.stop( );			
+			ed_server.stop( );	
+			test_shenzi.close( );
 			test_banzai.close( );
 			unit.done( );
 		}, 10000 );
@@ -759,11 +814,20 @@ module.exports.loseDataTests = {
 		function stageCompleted( ){
 			if( --expected_number_of_completions <= 0 ){
 				clearTimeout( timeout );
-				ed_server.stop( );			
+				ed_server.stop( );	
+				test_shenzi.close( );
 				test_banzai.close( );
 				unit.done();
 			}	
 		}
+		
+		test_shenzi.on( 'connection', function( socket ){
+			
+			socket.on( 'register', function( data, callback ){
+				data = data;
+				callback( '' );
+			} );
+		} );
 		
 		var banzai_connected = false;
 		test_banzai.on( 'connection', function( socket ){
@@ -798,6 +862,7 @@ module.exports.loseDataTests = {
 			} );
 		} );
 		
+		test_shenzi.listen( 2102 ); 
 		test_banzai.listen( 2103 ); 
 		
 		ed_server = new Ed( );
@@ -810,12 +875,14 @@ module.exports.loseDataTests = {
 		fs.writeFileSync( path.join( data_root, 'json' ), '{ "something": false, "else": 1 }' );
 		fs.writeFileSync( path.join( data_root, 'nested.file' ), 'Cool' );
 		
+		var test_shenzi = new Server( );
 		var test_banzai = new Server( );
 		var ed_server = null;
 		
 		var timeout = setTimeout( function( ){
 			unit.ok( 'false' );
-			ed_server.stop( );			
+			ed_server.stop( );		
+			test_shenzi.close( );
 			test_banzai.close( );
 			unit.done( );
 		}, 10000 );
@@ -824,11 +891,20 @@ module.exports.loseDataTests = {
 		function stageCompleted( ){
 			if( --expected_number_of_completions <= 0 ){
 				clearTimeout( timeout );
-				ed_server.stop( );			
+				ed_server.stop( );	
+				test_shenzi.close( );
 				test_banzai.close( );
 				unit.done();
 			}	
 		}
+		
+		test_shenzi.on( 'connection', function( socket ){
+			
+			socket.on( 'register', function( data, callback ){
+				data = data;
+				callback( '' );
+			} );
+		} );
 		
 		var banzai_connected = false;
 		test_banzai.on( 'connection', function( socket ){
@@ -863,6 +939,7 @@ module.exports.loseDataTests = {
 			} );
 		} );
 		
+		test_shenzi.listen( 2102 ); 
 		test_banzai.listen( 2103 ); 
 		
 		ed_server = new Ed( );
@@ -877,12 +954,14 @@ module.exports.holdDataTests = {
 		fs.writeFileSync( path.join( data_root, 'json' ), '{ "something": false, "else": 1 }' );
 		fs.writeFileSync( path.join( data_root, 'nested.file' ), 'Cool' );
 		
+		var test_shenzi = new Server( );
 		var test_banzai = new Server( );
 		var ed_server = null;
 		
 		var timeout = setTimeout( function( ){
 			unit.ok( 'false' );
-			ed_server.stop( );			
+			ed_server.stop( );	
+			test_shenzi.close( );
 			test_banzai.close( );
 			unit.done( );
 		}, 10000 );
@@ -891,11 +970,20 @@ module.exports.holdDataTests = {
 		function stageCompleted( ){
 			if( --expected_number_of_completions <= 0 ){
 				clearTimeout( timeout );
-				ed_server.stop( );			
+				ed_server.stop( );	
+				test_shenzi.close( );
 				test_banzai.close( );
 				unit.done();
 			}	
 		}
+		
+		test_shenzi.on( 'connection', function( socket ){
+			
+			socket.on( 'register', function( data, callback ){
+				data = data;
+				callback( '' );
+			} );
+		} );
 		
 		var banzai_connected = false;
 		test_banzai.on( 'connection', function( socket ){
@@ -930,6 +1018,7 @@ module.exports.holdDataTests = {
 			} );
 		} );
 		
+		test_shenzi.listen( 2102 ); 
 		test_banzai.listen( 2103 ); 
 		
 		ed_server = new Ed( );
@@ -942,12 +1031,14 @@ module.exports.holdDataTests = {
 		fs.writeFileSync( path.join( data_root, 'json' ), '{ "something": false, "else": 1 }' );
 		fs.writeFileSync( path.join( data_root, 'nested.file' ), 'Cool' );
 		
+		var test_shenzi = new Server( );
 		var test_banzai = new Server( );
 		var ed_server = null;
 		
 		var timeout = setTimeout( function( ){
 			unit.ok( 'false' );
-			ed_server.stop( );			
+			ed_server.stop( );
+			test_shenzi.close( );
 			test_banzai.close( );
 			unit.done( );
 		}, 10000 );
@@ -956,11 +1047,20 @@ module.exports.holdDataTests = {
 		function stageCompleted( ){
 			if( --expected_number_of_completions <= 0 ){
 				clearTimeout( timeout );
-				ed_server.stop( );			
+				ed_server.stop( );		
+				test_shenzi.close( );
 				test_banzai.close( );
 				unit.done();
 			}	
 		}
+		
+		test_shenzi.on( 'connection', function( socket ){
+			
+			socket.on( 'register', function( data, callback ){
+				data = data;
+				callback( '' );
+			} );
+		} );
 		
 		var banzai_connected = false;
 		test_banzai.on( 'connection', function( socket ){
@@ -1001,6 +1101,7 @@ module.exports.holdDataTests = {
 			} );
 		} );
 		
+		test_shenzi.listen( 2102 ); 
 		test_banzai.listen( 2103 ); 
 		
 		ed_server = new Ed( );
