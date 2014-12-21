@@ -1,0 +1,22 @@
+{
+	
+	"shenzi": {
+		"host": "localhost",
+		"port": 2102
+	},
+
+	"banzai": {
+		"host": "localhost",
+		"port": 2103,
+		"data": {
+			"replication": 1
+		}
+	},
+	
+	"ed": {
+		"data": {
+			"location": "temp"
+		}
+	}
+	
+}

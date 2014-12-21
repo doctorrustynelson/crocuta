@@ -29,7 +29,7 @@
 
 var path = require( 'path' );
 var config = require( '../lib/utils/config' );
-config.reinitialize( path.resolve( __dirname, './config/test.config.json' ) );
+config.reinitialize( path.resolve( __dirname, './config/temptest.config.json' ) );
 
 var Shenzi = require( '../lib/shenzi-server.js' );
 var Banzai = require( '../lib/banzai-server.js' );
@@ -319,6 +319,58 @@ module.exports.fileSystemTests = {
 							crocuta.stop();
 							unit.done( );
 						} );
+					} );
+				}
+			} );
+		} );
+	},
+	
+	simpleGetKeysUnder: function( unit ){
+		var Crocuta = require( '../lib/client' );
+		var crocuta = new Crocuta( );
+		
+		var timeout = setTimeout( function( ){
+			unit.ok( false, 'Test Timed Out.' );
+			crocuta.stop();
+			unit.done();
+		}, 10000 );
+		
+		var job = crocuta.createJob( 'list' ).joule( function( ){
+			/* global done */
+			/* global input */
+			/* global fileSystem */
+			
+			fileSystem.getKeysUnder( input, done );
+		} );
+	
+		crocuta.onReady( function( ){
+			unit.ok( true, 'onReady fired.' );
+			crocuta.upload( 'input.zero', 'Hello Crocuta!', function( err ){
+				if( err ){
+					unit.ok( false, 'input failed to be uploaded.' );
+					clearTimeout( timeout );
+					crocuta.stop();
+					unit.done();
+				} else {
+					crocuta.upload( 'input.one', 'Bye Crocuta!', function( err ){
+						if( err ){
+							unit.ok( false, 'input failed to be uploaded.' );
+							clearTimeout( timeout );
+							crocuta.stop();
+							unit.done();
+						} else {
+							unit.ok( true, 'input was uploaded.' );
+							job.send( function( err, job ){
+								unit.ok( !err, 'No error on send' );
+								job.start( 'input', function( err, result ){
+									unit.deepEqual( result.sort(), [ 'one', 'zero' ], 'Job returned correct result.' );
+									
+									clearTimeout( timeout );
+									crocuta.stop();
+									unit.done( );
+								} );
+							} );
+						}
 					} );
 				}
 			} );
