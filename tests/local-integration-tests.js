@@ -90,6 +90,37 @@ module.exports.simpleTests = {
 		} );
 	},
 	
+	printJob2: function( unit ){
+		var crocuta = require( '../lib/client' )( );
+		
+		var timeout = setTimeout( function( ){
+			unit.ok( false, 'Test Timed Out.' );
+			crocuta.stop();
+			unit.done();
+		}, 10000 );
+		
+		var job = crocuta.createJob( 'hello world' ).joule( function( ){
+			/* global input */
+			/* global done */
+			
+			console.log( 'Hello Crocuta!' );
+			done( 'Hello User!' );
+		} );
+	
+		crocuta.onReady( function( ){
+			unit.ok( true, 'onReady fired.' );
+			job.send( function( err, job ){
+				unit.ok( !err, 'No error on send' );
+				job.start( undefined, function( err, result ){
+					unit.equal( result, 'Hello User!', 'Job returned correct result.' );
+					clearTimeout( timeout );
+					crocuta.stop();
+					unit.done( );
+				} );
+			} );
+		} );
+	},
+	
 	jobWithInputs: function( unit ){
 		var Crocuta = require( '../lib/client' );
 		var crocuta = new Crocuta( );

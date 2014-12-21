@@ -15,7 +15,7 @@
 		"url": "https://github.com/doctorrustynelson/crocuta/issues"
 	},
 	"license": "MIT",
-  	"main": "lib/core.js",
+  	"main": "./lib/client.js",
 	"scripts": {
 		"test": "grunt test",
 		"coverage": "istanbul cover --preload-sources -x **/bin/** -x **/examples/** -x **/lib/cli/servers/** -x Gruntfile.js -v --print both grunt",
