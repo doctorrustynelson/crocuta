@@ -68,11 +68,11 @@ module.exports.simpleTests = {
 		
 		
 		var job = crocuta.createJob( 'hello world' ).joule( function( ){
-			/* global result: true */
 			/* global input */
+			/* global done */
 			
 			console.log( 'Hello Crocuta!' );
-			result = 'Hello User!';
+			done( 'Hello User!' );
 		} );
 	
 		crocuta.onReady( function( ){
@@ -100,10 +100,10 @@ module.exports.simpleTests = {
 		}, 10000 );
 		
 		var job = crocuta.createJob( 'add' ).joule( function( ){
-			/* global result: true */
+			/* global done */
 			/* global input */
 			
-			result = input + 1;
+			done( input + 1 );
 		} );
 	
 		crocuta.onReady( function( ){
@@ -134,15 +134,15 @@ module.exports.multiStagePipeTests = {
 		
 		var job = crocuta.createJob( 'add and multiply' )
 			.joule( function( ){
-				/* global result: true */
+				/* global done */
 				/* global input */
 				
-				result = input + 3;
+				done( input + 3 );
 			} ).joule( function( ){
-				/* global result: true */
+				/* global done */
 				/* global input */
 				
-				result = input * 3;
+				done( input * 3 );
 			} );
 	
 		crocuta.onReady( function( ){
@@ -173,26 +173,35 @@ module.exports.parallelTests = {
 		
 		var job = crocuta.createJob( 'parallel' )
 			.o2mjoule( function( ){
-				/* global result: true */
+				/* global done */
 				/* global input */
 				
-				result = input.split( '\n' ).reduce( function( out, value, index ){ out[index] = value; return out; }, {} );
+				done( 
+					input.split( '\n' )
+						.reduce( function( out, value, index ){ 
+							out[index] = value; 
+							return out; 
+						}, {}
+					)
+				);
+					
 			} ).joule( function( ){
-				/* global result: true */
+				/* global done */
 				/* global input */
 				
-				result = input.split( ' ' );
+				done( input.split( ' ' ) );
 			} ).m2ojoule( function( ){
-				/* global result: true */
+				/* global done */
 				/* global input */
 				
-				result = { };
+				var result = { };
 				var keys = Object.keys( input );
 				keys.forEach( function( key ){
 					input[ key ].forEach( function( value ){
 						result[ value ] = ( result[ value ] === undefined ? 1 : result[ value ] + 1 );
 					} );
 				} );
+				done( result );
 			} );
 	
 		crocuta.onReady( function( ){
@@ -241,11 +250,11 @@ module.exports.fileSystemTests = {
 		}, 10000 );
 		
 		var job = crocuta.createJob( 'add' ).joule( function( ){
-			/* global result: true */
+			/* global done */
 			/* global input */
 			/* global fileSystem */
 			
-			result = fileSystem.readSync( input );
+			done( fileSystem.readSync( input ) );
 		} );
 	
 		crocuta.onReady( function( ){

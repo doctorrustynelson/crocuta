@@ -67,16 +67,16 @@ module.exports.integrationTests = {
 		
 		
 		var job = crocuta.createJob( 'hello world' ).joule( function( /* input, output, reporter */ ){
-			/* global result: true */
 			/* global fileSystem */
+			/* global done */
 			
 			console.log( typeof fileSystem );
 			console.log( typeof LOGGER );
 			
-			result = { 
+			done( { 
 				fileSystem: typeof fileSystem,
 				LOGGER: typeof LOGGER
-			};
+			} );
 		} );
 	
 		crocuta.onReady( function( ){

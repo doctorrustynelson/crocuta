@@ -267,7 +267,7 @@ module.exports.processJouleTests = {
 					input: undefined,
 					joule: {
 						deploy: 'anonymous',
-						func: 'function( ){ result = 12345; }'
+						func: 'function( ){ done( 12345 ); }'
 					}
 				} );
 			} );
@@ -320,7 +320,7 @@ module.exports.processJouleTests = {
 					input: undefined,
 					joule: {
 						deploy: 'bad-deploy-type',
-						func: 'function( ){ result = 12345; }'
+						func: 'function( ){ done( 12345 ); }'
 					}
 				} );
 			} );
@@ -364,10 +364,11 @@ module.exports.processJouleTests = {
 					joule: {
 						deploy: 'anonymous',
 						func: [ 'function( ){',
-						        	'result = {};',
+						        	'var result = {};',
 						        	'input.value.split( " " ).forEach( function( word ){',
 						        		'result[ word ] = ( result[ word ] === undefined ? 1 : result[ word ] + 1 );',
 						        	'} );',
+						        	'done( result );',
 						        '}'
 						      ].join( '\n' ),
 					},
