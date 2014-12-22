@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var crocuta = require( '../../lib/client' );
+var crocuta = require( '../../lib/client' )( );
 
 var job = crocuta.createJob( 'hello world' ).joule( function( ){
 	console.log( 'Hello Crocuta!' );
@@ -8,10 +8,11 @@ var job = crocuta.createJob( 'hello world' ).joule( function( ){
 });
 
 crocuta.onReady( function( ){
-	job.send( function( err, compileD_job ){
-		compiled_job.start( function( err, result ){ 
+	job.send( function( err, compiled_job ){
+		compiled_job.start( undefined, function( err, result ){ 
 			console.log( 'Complete' )
 			console.log( result );
+			crocuta.stop( );
 		} );
 	} );
 } )

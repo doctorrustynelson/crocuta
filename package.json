@@ -1,12 +1,16 @@
 {
 	"name": "crocuta",
-  	"version": "0.0.1",
+  	"version": "0.0.3",
 	"description": "Node Map Reduce and Distributed Computing",
 	"keywords": [
 		"map reduce",
 		"distributed"
   	],
-  	"author": "Rusty Nelson",
+  	"author": {
+  		"name": "Rusty Nelson",
+  		"email": "doctor.rusty.nelson@gmail.com"
+  	},
+  	"homepage": "http://doctorrustynelson.github.io/crocuta/",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/doctorrustynelson/crocuta.git"
@@ -23,7 +27,7 @@
 		"crocuta": "node ./bin/crocuta.js"
 	},
 	"bin": {
-		"crocuta": "./bin/corcuta.js"
+		"crocuta": "./bin/crocuta.js"
 	},
   	"dependencies": {
   		"socket.io": "1.2.0",

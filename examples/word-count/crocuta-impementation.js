@@ -48,6 +48,7 @@ function run( ){
     job.send( function( err, compiled_job ){
         compiled_job.start( 'inputdir', function( err, result ){
              console.log( result );
+             crocuta.stop( );
         } );
     } );
 }
