@@ -123,6 +123,7 @@ function run( ){
     job.send( function( err, compiled_job ){
         compiled_job.start( 'inputdir', function( err, result ){
              console.log( result );
+             crocuta.stop( );
         } );
     } );
 }
@@ -145,11 +146,16 @@ fs.readdir( '/input', function( err, files ){
 <h3>
 <a id="running-map-reduce-script-locally" class="anchor" href="#running-map-reduce-script-locally" aria-hidden="true"><span class="octicon octicon-link"></span></a>Running Map-Reduce Script Locally</h3>
 
-<pre><code>$ crocuta start shenzi --detach
-$ crocuta start banzai --detach
-$ crocuta start ed --detach
-$ node script.js
-</code></pre>
+<p>Crocuta currently is lacking in some of its management tooling so this step may seem extreme (and it is).  This issue is being worked on.</p>
+
+<p>Open four terminals (or command lines) and in each run one of the following commands:</p>
+
+<ul>
+<li><code>crocuta start shenzi</code></li>
+<li><code>crocuta start banzai</code></li>
+<li><code>crocuta start ed</code></li>
+<li><code>node script.js</code></li>
+</ul>
 
 <h2>
 <a id="note" class="anchor" href="#note" aria-hidden="true"><span class="octicon octicon-link"></span></a>Note</h2>
